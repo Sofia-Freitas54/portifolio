@@ -1,6 +1,6 @@
-const menuButton = document.querySelector('#menu-toggle');
-const mobileMenu = document.querySelector('#mobile-menu');
-
+// ==========================================
+// 1. GERENCIAMENTO DO MENU LATERAL (MOBILE)
+// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
   const menuButton = document.querySelector('#menu-toggle');
   const closeButton = document.querySelector('#menu-close');
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (closeButton && mobileMenu) {
     closeButton.addEventListener('click', () => {
       mobileMenu.classList.add('hidden');
-      menuButton.setAttribute('aria-expanded', 'false');
+      if (menuButton) menuButton.setAttribute('aria-expanded', 'false');
     });
   }
 
@@ -43,146 +43,113 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
-
 });
 
+// ==========================================
+// 2. CÁLCULO DE TEMPO DINÂMICO NA EMPRESA
+// ==========================================
 function calcularTempoEmpresa() {
-        const dataInicio = new Date(2025, 4, 1); 
-        const dataAtual = new Date();
+  const dataInicio = new Date(2025, 4, 1); 
+  const dataAtual = new Date();
 
-        let anos = dataAtual.getFullYear() - dataInicio.getFullYear();
-        let meses = dataAtual.getMonth() - dataInicio.getMonth();
+  let anos = dataAtual.getFullYear() - dataInicio.getFullYear();
+  let meses = dataAtual.getMonth() - dataInicio.getMonth();
 
-        // Ajusta os meses e anos se o mês atual for menor que o mês de início
-        if (meses < 0) {
-          anos--;
-          meses += 12;
-        }
+  // Ajusta os meses e anos se o mês atual for menor que o mês de início
+  if (meses < 0) {
+    anos--;
+    meses += 12;
+  }
 
-        // Formata o texto final dinamicamente
-        let textoAnos = anos > 0 ? `${anos} ${anos === 1 ? 'ano' : 'anos'}` : '';
-        let textoMeses = meses > 0 ? `${meses} ${meses === 1 ? 'mês' : 'meses'}` : '';
-        
-        let resultado = '';
-        if (textoAnos && textoMeses) {
-          resultado = `${textoAnos} e ${textoMeses}`;
-        } else {
-          resultado = textoAnos || textoMeses || 'Menos de um mês';
-        }
+  // Formata o texto final dinamicamente
+  let textoAnos = anos > 0 ? `${anos} ${anos === 1 ? 'ano' : 'anos'}` : '';
+  let textoMeses = meses > 0 ? `${meses} ${meses === 1 ? 'mês' : 'meses'}` : '';
+  
+  let resultado = '';
+  if (textoAnos && textoMeses) {
+    resultado = `${textoAnos} e ${textoMeses}`;
+  } else {
+    resultado = textoAnos || textoMeses || 'Menos de um mês';
+  }
 
-        // Insere o resultado na tag com o id "tempo-atual"
-        document.querySelector('#tempo-atual span').innerText = resultado;
-      }
-      
-      // Executa a função assim que a página carrega
-      window.addEventListener('DOMContentLoaded', calcularTempoEmpresa);
+  // Insere o resultado na tag com o id "tempo-atual"
+  const elementoTempo = document.querySelector('#tempo-atual span');
+  if (elementoTempo) {
+    elementoTempo.innerText = resultado;
+  }
+}
 
+// Executa a função assim que a página carrega
+window.addEventListener('DOMContentLoaded', calcularTempoEmpresa);
 
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const textoCompleto = "Dados | Análise de Dados | Python | SQL";
-    let index = 0;
-    const velocidade = 60; // Velocidade da digitação em milissegundos por letra
-    const elemento = document.getElementById('typing-text');
-    
-    function digitarTexto() {
-      if (index < textoCompleto.length) {
-        elemento.textContent += textoCompleto.charAt(index);
-        index++;
-        setTimeout(digitarTexto, velocidade);
-      } else {
-        // Quando termina de digitar, remove o cursor piscante após 2 segundos
-        setTimeout(() => {
-          elemento.classList.add('typing-done');
-        }, 2000);
-      }
+// ==========================================
+// 3. EFEITO DE DIGITAÇÃO (TYPING EFFECT)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+  const textoCompleto = "Dados | Análise de Dados | Python | SQL";
+  let index = 0;
+  const velocidade = 60; // Velocidade da digitação em milissegundos por letra
+  const elemento = document.getElementById('typing-text');
+  
+  function digitarTexto() {
+    if (elemento && index < textoCompleto.length) {
+      elemento.textContent += textoCompleto.charAt(index);
+      index++;
+      setTimeout(digitarTexto, velocidade);
+    } else if (elemento) {
+      // Quando termina de digitar, remove o cursor piscante após 2 segundos
+      setTimeout(() => {
+        elemento.classList.add('typing-done');
+      }, 2000);
     }
-    
-    // Inicia a digitação após o container surgir na tela (efeito do FadeInUp)
-    setTimeout(digitarTexto, 1200);
-  });
+  }
+  
+  // Inicia a digitação após o container surgir na tela
+  setTimeout(digitarTexto, 1200);
+});
 
-  document.addEventListener("DOMContentLoaded", () => {
-  // 1. Aplica a classe de revelação nas seções principais de conteúdo
+// ==========================================
+// 4. ANIMAÇÕES UNIFICADAS VIA SCROLL (OBSERVER)
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+  
+  // Captura os elementos com as classes de animação do seu HTML
   const portfolioSection = document.querySelector("#portfolio h2");
   const projectCards = document.querySelectorAll("#portfolio .grid > div");
   const experienceSection = document.getElementById("experiencia");
   const educationSection = document.getElementById("educacao");
-
-  // Adiciona a classe inicial de animação para os blocos
-  if (portfolioSection) portfolioSection.classList.add("scroll-reveal");
-  if (experienceSection) experienceSection.classList.add("scroll-reveal");
-  if (educationSection) educationSection.classList.add("scroll-reveal");
-  projectCards.forEach(card => card.classList.add("scroll-reveal"));
-
-  // 2. Configura o observador para ativar os elementos quando visíveis na tela
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("active");
-        // Opcional: remove a observação após animar para não repetir o efeito
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.1, // Dispara a animação assim que 10% do item surgir na tela
-    rootMargin: "0px 0px -50px 0px" // Adiciona uma margem sutil para disparar antes do rodapé
-  });
-
-  // Começa a observar cada elemento selecionado
-  const elementsToReveal = document.querySelectorAll(".scroll-reveal");
-  elementsToReveal.forEach((el) => revealObserver.observe(el));
-});
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  const techBadges = document.querySelectorAll(".tech-badge-anim");
-  
-  // Criamos um observador para assistir quando o bloco de tecnologias entra na tela
-  const techObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        // Quando a seção fica visível, ativa cada tag com um atraso (delay) progressivo
-        techBadges.forEach((badge, index) => {
-          setTimeout(() => {
-            badge.classList.add("reveal");
-          }, index * 50); // 50ms de diferença sutil entre o surgimento de cada um
-        });
-        
-        // Desativa o observador para rodar a animação apenas uma vez
-        techObserver.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.15 // Dispara quando 15% da seção estiver visível
-  });
-
-  // Começa a observar o container pai das tecnologias
-  const techContainer = document.getElementById("technologies");
-  if (techContainer) {
-    techObserver.observe(techContainer);
-  }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  
-  // 1. ANIMAÇÃO GERAL DE SEÇÕES E CARDS
   const generalElements = document.querySelectorAll(".scroll-animate");
-  
+
+  // Adiciona uma classe base de revelação para unificar o comportamento do CSS
+  if (portfolioSection) portfolioSection.classList.add("scroll-animate");
+  if (experienceSection) experienceSection.classList.add("scroll-animate");
+  if (educationSection) educationSection.classList.add("scroll-animate");
+  projectCards.forEach(card => card.classList.add("scroll-animate"));
+
+  // Recarrega a lista para incluir os itens acima configurados dinamicamente
+  const elementsToAnimate = document.querySelectorAll(".scroll-animate");
+
+  // Configura o observador único para ativar as seções e projetos na tela
   const generalObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
+        // Ativa todas as variações de classes que o seu CSS/Tailwind pode estar esperando
         entry.target.classList.add("reveal");
-        // Se quiser que a animação aconteça SEMPRE que rolar (e não só uma vez), remova a linha abaixo:
+        entry.target.classList.add("active");
+        
+        // Remove a observação após animar para fixar o elemento na tela
         generalObserver.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1 }); // Dispara quando 10% do elemento aparece
+  }, { 
+    threshold: 0.1, 
+    rootMargin: "0px 0px -50px 0px" 
+  });
 
-  generalElements.forEach((el) => generalObserver.observe(el));
+  // Inicia a observação de todos os blocos de conteúdo
+  elementsToAnimate.forEach((el) => generalObserver.observe(el));
 
-
-  // 2. ANIMAÇÃO EM CASCATA (DOMINÓ) PARA AS TECNOLOGIAS
+  // ANIMAÇÃO EM CASCATA (DOMINÓ) PARA AS TECNOLOGIAS
   const techBadges = document.querySelectorAll(".tech-badge-anim");
   const techContainer = document.getElementById("technologies");
 
@@ -193,6 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
           techBadges.forEach((badge, index) => {
             setTimeout(() => {
               badge.classList.add("reveal");
+              badge.classList.add("active");
             }, index * 50); // Atraso de 50ms entre cada tag
           });
           techObserver.unobserve(entry.target);
