@@ -1,4 +1,11 @@
 // ==========================================
+// VERCEL WEB ANALYTICS
+// ==========================================
+import { inject } from '@vercel/analytics';
+
+inject();
+
+// ==========================================
 // 1. GERENCIAMENTO DO MENU LATERAL (MOBILE)
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
